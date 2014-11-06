@@ -1,10 +1,27 @@
 var http = require('http');
+var url = require('url');
 
-var server = http.createServer(function (request, respsonse) {
-	respsonse.writeHead(200, {
+function renderNewPostForm(request, response) {
+	response.writeHead(200, {
 		'Content-type': 'text/plain'
 	});
-	respsonse.end("Hello world");
+	response.end("Hello world");
+}
+
+function render404(request, response) {
+	response.writeHead(404);
+	response.end("404");
+}
+
+var server = http.createServer(function (request, response) {
+	var newPostFormRegex = new RegExp('^/posts/new/?$');
+	var pathname = url.parse(request.url).pathname;
+	if (newPostFormRegex.test(pathname)) {
+		renderNewPostForm(request, response);
+	} else {
+		render404(request, response);
+	}
+	renderNewPostForm(request, response);
 })
 
 server.listen(8000);
